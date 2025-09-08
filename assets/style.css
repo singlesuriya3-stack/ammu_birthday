@@ -1,0 +1,203 @@
+:root{
+--bg:#0f0f1a; --card:#141428cc; --text:#f7f7fb; --muted:#b8b8c6;
+--accent:#ff6ba6; --accent-2:#ffd166; --glow:#ff6ba655;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif; color:var(--text);
+background: radial-gradient(1200px 800px at 50% -20%, #1e1e33 0%, #0f0f1a 55%, #0b0b14 100%);
+overflow-x:hidden;
+}
+
+/* Layout */
+.container{min-height:100dvh; display:grid; grid-template-rows:auto 1fr auto; gap:24px; padding:24px clamp(16px,4vw,40px) 28px; position:relative; isolation:isolate;}
+header{text-align:center; position:relative; z-index:1;}
+h1{margin:0; font-size:clamp(28px,5vw,44px); letter-spacing:.5px; background:linear-gradient(90deg,#ffd166,#ff6ba6,#b388ff); -webkit-background-clip:text; background-clip:text; color:transparent; animation:fadeSlide .8s both;}
+.subtitle{color:var(--muted); margin-top:8px; font-size:clamp(14px,2.4vw,16px); animation:fadeSlide .9s .08s both;}
+
+/* Card */
+.card{
+z-index:1; background:var(--card); border:1px solid #ffffff14; border-radius:18px; padding:22px;
+max-width:1000px; margin:0 auto; backdrop-filter:blur(8px);
+box-shadow:0 12px 40px #00000055, inset 0 0 0 1px #ffffff08; animation:popIn .6s .05s both;
+}
+.wish{font-size:clamp(16px,2.6vw,18px); line-height:1.6; margin:6px 0 16px; color:#f0f0ff;}
+.emph{color:var(--accent); font-weight:600}
+
+/* 3D gallery grid */
+.gallery-3d{
+display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin:18px 0 6px;
+}
+.flip-card{ perspective:1000px; position:relative; height:220px; border-radius:14px; outline:none; }
+.flip-inner{
+position:relative; 
+width:100%;
+height:100%;
+transform-style:preserve-3d; 
+transition:transform .7s cubic-bezier(.2,.7,.2,1), filter .2s;
+border-radius:14px; 
+overflow:hidden;
+box-shadow:0 10px 26px #00000055, inset 0 0 0 1px #ffffff14;
+view-timeline-name:--reveal; view-timeline-axis:block; animation:auto linear reveal both; animation-timeline:--reveal; animation-range:entry 25% cover 45%;
+}
+
+
+.face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;}
+
+/* Images: fill neatly; adjust object-position per photo if needed */
+.front img{
+width:100%;
+ height:100%; 
+ object-fit:cover; 
+ object-position:40% 20%;
+  display:block;
+ 
+}
+.facefront1 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position:40% 20%;
+  display: block;
+}
+.facefront2 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 40% 20%;
+  display: block;
+}
+.facefront3 {
+  width: 300px;
+  height: 200px;
+  overflow: hidden;
+}
+
+.facefront3 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position:30% 30%;
+  display: block;
+}
+
+
+
+
+/* Back face */
+.back{
+display:grid; place-items:center; padding:16px; text-align:center;
+background:linear-gradient(160deg,#1a1530,#261a40); color:#f7f7fb;
+transform:rotateY(180deg);
+}
+
+/* Flip state */
+.flip-card.flipped .flip-inner{ transform:rotateY(180deg); }
+
+/* Tilt effect */
+.tilt .flip-inner{ will-change:transform; }
+.tilt:hover .flip-inner{ filter:brightness(1.03) saturate(1.03); }
+
+/* Music dock */
+.music-dock{
+position:fixed; right:16px; bottom:16px; z-index:3;
+background:linear-gradient(180deg, #1a1430cc, #141428cc); color:#fff; border:1px solid #ffffff1c; border-radius:16px;
+padding:12px; width:min(260px, 86vw); box-shadow:0 12px 36px #00000066, 0 0 0 1px #ffffff0a inset;
+backdrop-filter:blur(8px); display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:10px; animation:floatUp .7s .2s both ease;
+}
+.music-art{
+width:42px; height:42px; border-radius:10px; background:conic-gradient(from 210deg, #ff6ba6, #ffd166, #b388ff, #ff6ba6);
+box-shadow:0 6px 18px var(--glow);
+}
+.music-meta{display:flex; flex-direction:column; gap:4px;}
+.title{font-size:14px; font-weight:600}
+.artist{font-size:12px; color:var(--muted)}
+.icon-btn{
+appearance:none; border:0; background:#ffffff10; color:#fff; border-radius:999px; width:36px; height:36px; cursor:pointer;
+display:grid; place-items:center; box-shadow:0 6px 12px #00000040; transition:transform .15s ease, background .2s ease;
+}
+.icon-btn:hover{transform:translateY(-1px); background:#ffffff20}
+.bar{grid-column:1 / -1; height:6px; background:#ffffff18; border-radius:999px; overflow:hidden; position:relative; margin-top:6px}
+.progress{position:absolute; inset:0 auto 0 0; width:0%; background:linear-gradient(90deg,#ffd166,#ff6ba6); border-radius:999px; transition:width .15s linear}
+
+/* Lightbox */
+.lightbox{ position:fixed; inset:0; z-index:10; display:none; align-items:center; justify-content:center; }
+.lightbox.show{ display:flex; }
+.lightbox-backdrop{ position:absolute; inset:0; background:#0009; backdrop-filter:blur(6px); }
+.lightbox-img{
+position:relative; max-width:min(92vw, 1100px); max-height:min(86vh, 820px);
+border-radius:16px; box-shadow:0 20px 60px #000a; transform:translateZ(0) scale(.96);
+animation:zoomIn .28s ease both;
+}
+.lightbox-close{
+position:absolute; top:18px; right:20px; width:38px; height:38px; border-radius:999px; border:0; cursor:pointer;
+font-size:22px; background:#ffffff1a; color:#fff; box-shadow:0 6px 16px #0006;
+}
+
+/* Floating hearts + emblem */
+.center-heart{position:fixed; inset:auto 0 12%; margin-inline:auto; width:120px; height:120px; opacity:.08; z-index:0; filter:drop-shadow(0 0 14px #ff6ba655)}
+.center-heart .heart{position:relative; width:100%; height:100%; transform:rotate(45deg); background:linear-gradient(135deg,#ff6ba6,#ff2e74); animation:heartbeat 1.6s ease-in-out infinite; border-radius:12px;}
+.center-heart .heart:before,.center-heart .heart:after{content:""; position:absolute; width:100%; height:100%; background:inherit; border-radius:50%}
+.center-heart .heart:before{top:-50%; left:0}
+.center-heart .heart:after{left:-50%; top:0}
+
+.float-layer{position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden}
+.float-heart{position:absolute; width:12px; height:12px; opacity:.7; transform:translate(-50%,-50%) rotate(45deg);
+background:radial-gradient(circle at 30% 30%, #fff 0 18%, #ff83b3 19% 100%); filter:drop-shadow(0 0 6px #ff6ba666);
+animation:rise var(--dur) linear infinite; border-radius:3px;}
+.float-heart::before,.float-heart::after{content:""; position:absolute; width:100%; height:100%; border-radius:50%; background:inherit}
+.float-heart::before{top:-50%; left:0}
+.float-heart::after{left:-50%; top:0}
+
+/* Keyframes */
+@keyframes heartbeat{0%,25%{transform:rotate(45deg) scale(1)}30%{transform:rotate(45deg) scale(1.35)}50%{scale:1.15}70%{scale:1.35}100%{transform:rotate(45deg) scale(1)}}
+@keyframes rise{from{transform:translate(var(--x,0), 110vh) rotate(45deg) scale(var(--s,1)); opacity:0} 10%{opacity:.85} 80%{opacity:.85} to{transform:translate(calc(var(--x,0) + var(--drift, 0px)), -10vh) rotate(45deg) scale(var(--s,1)); opacity:0}}
+@keyframes popIn{from{opacity:0; transform:translateY(8px) scale(.98)} to{opacity:1; transform:translateY(0) scale(1)}}
+@keyframes fadeSlide{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)}}
+@keyframes zoomIn{ from{opacity:0; transform:scale(.92)} to{opacity:1; transform:scale(1)}}
+
+/* Reveal */
+@keyframes reveal{from{opacity:0; clip-path: inset(0% 60% 0% 50%)} to{opacity:1; clip-path: inset(0% 0% 0% 0%)}}
+
+/* Responsive */
+@media (max-width:860px){
+.gallery-3d{grid-template-columns:repeat(2,minmax(0,1fr))}
+.flip-card{height:200px}
+}
+@media (max-width:540px){
+.gallery-3d{grid-template-columns:1fr}
+.flip-card{height:240px}
+}
+
+/* Optional alternative: show full image (no crop)
+.front img{ object-fit:contain; background:#0f0f1a; } */
+
+/* Magnifier cursor + smooth hover zoom using existing markup */
+.gallery-3d .flip-card .front img,
+.gallery-3d .flip-card .facefront1 img,
+.gallery-3d .flip-card .facefront2 img,
+.gallery-3d .flip-card .facefront3 img {
+  cursor: zoom-in;                 /* standard magnifier cursor */ /* MDN */ 
+  transition: transform .28s ease, filter .28s ease;              /* smooth animation */ 
+  transform-origin: center center;                                 /* scale from center */ 
+  will-change: transform;
+}
+
+.gallery-3d .flip-card .front img:hover,
+.gallery-3d .flip-card .facefront1 img:hover,
+.gallery-3d .flip-card .facefront2 img:hover,
+.gallery-3d .flip-card .facefront3 img:hover {
+  transform: scale(1.08);          /* subtle zoom */ 
+  filter: saturate(1.05) contrast(1.02);
+}
+
+/* Ensure zoom stays within card frame (uses existing containers) */
+.gallery-3d .flip-card .face.front,
+.gallery-3d .flip-card .facefront1,
+.gallery-3d .flip-card .facefront2,
+.gallery-3d .flip-card .facefront3 {
+  overflow: hidden;                /* keep scaled image clipped */ 
+  border-radius: 6px;             /* optional: nicer edges */ 
+}
+
